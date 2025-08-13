@@ -1,0 +1,35 @@
+layout Geometry3D_Vertex
+{
+  float3 pos : POSITION;
+  float3 normal : NORMAL;
+  float2 texCoord : TEXCOORD0;
+  float3 col : COLOR;
+};
+
+layout Geometry3D_Transform
+{
+  matrix view;
+  matrix model;
+  matrix projection;
+};
+
+layout Geometry3D_InstancedLayout
+{
+  float4 instanceMatrixRow0 : INSTANCEMTX0;
+  float4 instanceMatrixRow1 : INSTANCEMTX1;
+  float4 instanceMatrixRow2 : INSTANCEMTX2;
+  float4 instanceMatrixRow3 : INSTANCEMTX3;
+};
+
+//
+// THIS IS VERTEX BUFFER INPUT AND LAYOUT
+//
+vertex Geometry3D_Vertex @input;
+
+//
+// THIS IS CONSTANT BUFFER THT IS VISIBLE IN VERTEX AND PIXEL SHADER
+// IT IS BOUND TO BUFFER0
+//
+buffer Geometry3D_Transform @vertex @pixel @b0;
+
+buffer Geometry3D_InstancedLayout @vertex @pixel @b1;

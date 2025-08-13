@@ -1,10 +1,18 @@
 @echo off
-
 setlocal enabledelayedexpansion
 
-@REM set MODULES=Math Main
-
 set CXX=cl
-%LINKER% %LINKFLAGS%
+set VTXC=out\vtxgen.exe
 
-%CXX% /TC code/main.c /link d3d12.lib dxgi.lib d3dcompiler.lib dxguid.lib uuid.lib kernel32.lib user32.lib gdi32.lib /out:Out.exe
+set VTX_SOURCE_DIR=code\render\vtx
+set VTX_DEST_DIR=code\render\generated
+set MODULES=geometry_3d_pass.vtx ui_pass.vtx
+
+for %%m in (%MODULES%) do (
+  %VTXC% "%VTX_SOURCE_DIR%\%%m" "%VTX_DEST_DIR%\%%m"
+)
+
+%CXX% code\main.c /link /out:out/out.exe
+
+fxc.exe /T vs_4_0 /E main /Fo vertex.cso code\vertex.hlsl
+fxc.exe /T ps_4_0 /E main /Fo pixel.cso code\pixel.hlsl

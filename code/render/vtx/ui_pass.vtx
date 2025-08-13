@@ -1,0 +1,34 @@
+layout Geometry2D_Vertex
+{
+  float3 pos : POSITION;
+  float3 col : COLOR;
+};
+
+layout PS_INPUT
+{
+  float4 pos : SV_POSITION;
+  float3 col : COLOR;
+};
+
+layout Geometry2D_Transform
+{
+  float time;
+  float scale;
+  float2 padding;
+};
+
+//
+// THIS IS VERTEX BUFFER INPUT AND LAYOUT
+//
+vertex Geometry2D_Vertex @input;
+
+//
+// THIS IS PIXEL SHADER INPUT
+//
+pixel PS_INPUT @input @gpu;
+
+//
+// THIS IS CONSTANT BUFFER THT IS VISIBLE IN VERTEX AND PIXEL SHADER
+// IT IS BOUND TO BUFFER0
+//
+buffer Geometry2D_Transform @vertex @pixel @b0;
