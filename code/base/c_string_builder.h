@@ -13,9 +13,13 @@ typedef struct
 } CStringBuilder;
 
 void sb_init( CStringBuilder *sb, char *buf, size_t cap );
+
 void sb_reset( CStringBuilder *sb );
+
 void sb_append( CStringBuilder *sb, const char *str );
+
 void sb_append_char( CStringBuilder *sb, char c );
+
 void sb_appendf( CStringBuilder *sb, const char *fmt, ... );
 
 #define DECLARE_STRING_BUILDER( name, size )                                                                           \

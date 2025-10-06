@@ -24,3 +24,12 @@ cbuffer Geometry3D_InstancedLayout : register(b1) {
     float4 instanceMatrixRow3;
 };
 
+cbuffer Geometry3D_Light : register(b2) {
+    float3 position;
+    float intensity;
+    float3 direction;
+    float radius;
+};
+
+Texture2D texture1 : register(t0);
+SamplerState sampler1 : register(s0);

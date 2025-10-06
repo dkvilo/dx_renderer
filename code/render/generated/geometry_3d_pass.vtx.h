@@ -39,4 +39,11 @@ typedef struct Geometry3D_InstancedLayout {
     float instanceMatrixRow3[4];
 } Geometry3D_InstancedLayout;
 
+typedef struct Geometry3D_Light {
+    float position[3];
+    float intensity;
+    float direction[3];
+    float radius;
+} Geometry3D_Light;
+
 #endif // GEOMETRY_3D_PASS_VTX_H_

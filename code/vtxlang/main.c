@@ -36,7 +36,9 @@ typedef enum
 {
 	DECL_TYPE_VERTEX,
 	DECL_TYPE_PIXEL,
-	DECL_TYPE_BUFFER
+	DECL_TYPE_BUFFER,
+	DECL_TYPE_SAMPLER,
+	DECL_TYPE_TEXTURE
 } DeclarationType;
 
 typedef enum HostExport
@@ -50,6 +52,7 @@ typedef enum HostExport
 typedef struct
 {
 	DeclarationType type;
+	char            name[MAX_NAME_LEN];
 	char            layout_name[MAX_NAME_LEN];
 	char            binding[MAX_NAME_LEN];
 	int             is_vertex_stage;
@@ -83,6 +86,58 @@ static const TypeMapping TYPE_MAPPINGS[] = {
     { "float", "float", 1, "float", "DXGI_FORMAT_R32_FLOAT" },
     { "u8x4", "uint8_t", 4, "float4", "DXGI_FORMAT_R8G8B8A8_UNORM" },
     { "uint", "unsigned int", 1, "uint", "DXGI_FORMAT_R32_UINT" },
+    { "int4", "int", 4, "int4", "DXGI_FORMAT_R32G32B32A32_SINT" },
+    { "int3", "int", 3, "int3", "DXGI_FORMAT_R32G32B32_SINT" },
+    { "int2", "int", 2, "int2", "DXGI_FORMAT_R32G32_SINT" },
+    { "int", "int", 1, "int", "DXGI_FORMAT_R32_SINT" },
+    { "uint4", "unsigned int", 4, "uint4", "DXGI_FORMAT_R32G32B32A32_UINT" },
+    { "uint3", "unsigned int", 3, "uint3", "DXGI_FORMAT_R32G32B32_UINT" },
+    { "uint2", "unsigned int", 2, "uint2", "DXGI_FORMAT_R32G32_UINT" },
+    { "i16x4", "int16_t", 4, "int4", "DXGI_FORMAT_R16G16B16A16_SINT" },
+    { "i16x3", "int16_t", 3, "int3", "DXGI_FORMAT_R16G16B16A16_SINT" },
+    { "i16x2", "int16_t", 2, "int2", "DXGI_FORMAT_R16G16_SINT" },
+    { "i16", "int16_t", 1, "int", "DXGI_FORMAT_R16_SINT" },
+    { "u16x4", "uint16_t", 4, "uint4", "DXGI_FORMAT_R16G16B16A16_UINT" },
+    { "u16x3", "uint16_t", 3, "uint3", "DXGI_FORMAT_R16G16B16A16_UINT" },
+    { "u16x2", "uint16_t", 2, "uint2", "DXGI_FORMAT_R16G16_UINT" },
+    { "u16", "uint16_t", 1, "uint", "DXGI_FORMAT_R16_UINT" },
+    { "u16x4_norm", "uint16_t", 4, "float4", "DXGI_FORMAT_R16G16B16A16_UNORM" },
+    { "u16x2_norm", "uint16_t", 2, "float2", "DXGI_FORMAT_R16G16_UNORM" },
+    { "u16_norm", "uint16_t", 1, "float", "DXGI_FORMAT_R16_UNORM" },
+    { "i16x4_norm", "int16_t", 4, "float4", "DXGI_FORMAT_R16G16B16A16_SNORM" },
+    { "i16x2_norm", "int16_t", 2, "float2", "DXGI_FORMAT_R16G16_SNORM" },
+    { "i16_norm", "int16_t", 1, "float", "DXGI_FORMAT_R16_SNORM" },
+    { "i8x4", "int8_t", 4, "int4", "DXGI_FORMAT_R8G8B8A8_SINT" },
+    { "i8x2", "int8_t", 2, "int2", "DXGI_FORMAT_R8G8_SINT" },
+    { "i8", "int8_t", 1, "int", "DXGI_FORMAT_R8_SINT" },
+    { "u8x4", "uint8_t", 4, "uint4", "DXGI_FORMAT_R8G8B8A8_UINT" },
+    { "u8x2", "uint8_t", 2, "uint2", "DXGI_FORMAT_R8G8_UINT" },
+    { "u8", "uint8_t", 1, "uint", "DXGI_FORMAT_R8_UINT" },
+    { "i8x4_norm", "int8_t", 4, "float4", "DXGI_FORMAT_R8G8B8A8_SNORM" },
+    { "i8x2_norm", "int8_t", 2, "float2", "DXGI_FORMAT_R8G8_SNORM" },
+    { "i8_norm", "int8_t", 1, "float", "DXGI_FORMAT_R8_SNORM" },
+    { "half4", "uint16_t", 4, "float4", "DXGI_FORMAT_R16G16B16A16_FLOAT" },
+    { "half2", "uint16_t", 2, "float2", "DXGI_FORMAT_R16G16_FLOAT" },
+    { "half", "uint16_t", 1, "float", "DXGI_FORMAT_R16_FLOAT" },
+    { "u10u10u10u2", "uint32_t", 1, "float4", "DXGI_FORMAT_R10G10B10A2_UNORM" },
+    { "u10u10u10u2_uint", "uint32_t", 1, "uint4", "DXGI_FORMAT_R10G10B10A2_UINT" },
+    { "u11u11u10", "uint32_t", 1, "float3", "DXGI_FORMAT_R11G11B10_FLOAT" },
+    { "bgra8", "uint8_t", 4, "float4", "DXGI_FORMAT_B8G8R8A8_UNORM" },
+    { "bgrx8", "uint8_t", 4, "float3", "DXGI_FORMAT_B8G8R8X8_UNORM" },
+    { "rgba8_srgb", "uint8_t", 4, "float4", "DXGI_FORMAT_R8G8B8A8_UNORM_SRGB" },
+    { "bgra8_srgb", "uint8_t", 4, "float4", "DXGI_FORMAT_B8G8R8A8_UNORM_SRGB" },
+    { "r9g9b9e5", "uint32_t", 1, "float3", "DXGI_FORMAT_R9G9B9E5_SHAREDEXP" },
+    { "double4", "double", 4, "double4", "DXGI_FORMAT_UNKNOWN" },
+    { "double2", "double", 2, "double2", "DXGI_FORMAT_UNKNOWN" },
+    { "double", "double", 1, "double", "DXGI_FORMAT_UNKNOWN" },
+    { "color", "uint8_t", 4, "float4", "DXGI_FORMAT_R8G8B8A8_UNORM" },
+    { "color_bgra", "uint8_t", 4, "float4", "DXGI_FORMAT_B8G8R8A8_UNORM" },
+    { "normal", "int8_t", 4, "float4", "DXGI_FORMAT_R8G8B8A8_SNORM" },
+    { "normal16", "int16_t", 4, "float4", "DXGI_FORMAT_R16G16B16A16_SNORM" },
+    { "index16", "uint16_t", 1, "uint", "DXGI_FORMAT_R16_UINT" },
+    { "index32", "uint32_t", 1, "uint", "DXGI_FORMAT_R32_UINT" },
+    { "bone_weights", "uint8_t", 4, "float4", "DXGI_FORMAT_R8G8B8A8_UNORM" },
+    { "bone_indices", "uint8_t", 4, "uint4", "DXGI_FORMAT_R8G8B8A8_UINT" },
 };
 static const int NUM_TYPE_MAPPINGS = sizeof( TYPE_MAPPINGS ) / sizeof( TYPE_MAPPINGS[0] );
 
@@ -100,15 +155,23 @@ static TypeMapping get_type_mapping( const char *dsl_type )
 	return fallback;
 }
 
-static char   *trim_whitespace( char *s );
-static int     parse_field_line( char *line, Field *field );
-static int     parse_layout( FILE *f, Layout *layout );
-static int     parse_declaration_attributes( char *attr_str, Declaration *decl );
-static int     parse_file( const char *path, ParsedFile *parsed );
+static char *trim_whitespace( char *s );
+
+static int parse_field_line( char *line, Field *field );
+
+static int parse_layout( FILE *f, Layout *layout );
+
+static int parse_declaration_attributes( char *attr_str, Declaration *decl );
+
+static int parse_file( const char *path, ParsedFile *parsed );
+
 static Layout *find_layout( ParsedFile *parsed, const char *name );
-static void    generate_header_file( FILE *hf, ParsedFile *parsed, const char *input_path, const char *header_guard );
-static void    generate_hlsl_file( FILE *hfsl, ParsedFile *parsed, const char *input_path );
-static void    write_output_files( const char *output_basename, const char *input_path, ParsedFile *parsed );
+
+static void generate_header_file( FILE *hf, ParsedFile *parsed, const char *input_path, const char *header_guard );
+
+static void generate_hlsl_file( FILE *hfsl, ParsedFile *parsed, const char *input_path );
+
+static void write_output_files( const char *output_basename, const char *input_path, ParsedFile *parsed );
 
 static char *trim_whitespace( char *s )
 {
@@ -184,6 +247,7 @@ static int parse_layout( FILE *f, Layout *layout )
 		char *t = trim_whitespace( line );
 		if ( *t == '\0' || strncmp( t, "//", 2 ) == 0 )
 			continue;
+
 		if ( *t == '}' )
 			break;
 
@@ -277,14 +341,23 @@ static int parse_file( const char *path, ParsedFile *parsed )
 		}                                                                                                              \
 		else                                                                                                           \
 		{                                                                                                              \
-			Declaration *decl               = &parsed->declarations[parsed->declaration_count];                        \
-			decl->type                      = type_enum;                                                               \
-			char  layout_name[MAX_NAME_LEN] = { 0 };                                                                   \
-			char *rest                      = t + strlen( keyword );                                                   \
-			int   n                         = 0;                                                                       \
-			if ( sscanf( rest, "%63s %n", layout_name, &n ) == 1 )                                                     \
+			Declaration *decl            = &parsed->declarations[parsed->declaration_count];                           \
+			decl->type                   = type_enum;                                                                  \
+			char  name_tok[MAX_NAME_LEN] = { 0 };                                                                      \
+			char *rest                   = t + strlen( keyword );                                                      \
+			int   n                      = 0;                                                                          \
+			if ( sscanf( rest, "%63s %n", name_tok, &n ) == 1 )                                                        \
 			{                                                                                                          \
-				strncpy( decl->layout_name, layout_name, sizeof( decl->layout_name ) - 1 );                            \
+				if ( type_enum == DECL_TYPE_TEXTURE || type_enum == DECL_TYPE_SAMPLER )                                \
+				{                                                                                                      \
+					strncpy( decl->name, name_tok, sizeof( decl->name ) - 1 );                                         \
+					decl->layout_name[0] = '\0';                                                                       \
+				}                                                                                                      \
+				else                                                                                                   \
+				{                                                                                                      \
+					strncpy( decl->layout_name, name_tok, sizeof( decl->layout_name ) - 1 );                           \
+					decl->name[0] = '\0';                                                                              \
+				}                                                                                                      \
 				parse_declaration_attributes( rest + n, decl );                                                        \
 				parsed->declaration_count++;                                                                           \
 			}                                                                                                          \
@@ -338,6 +411,8 @@ static int parse_file( const char *path, ParsedFile *parsed )
 		PARSE_DECL( "vertex", DECL_TYPE_VERTEX );
 		PARSE_DECL( "pixel", DECL_TYPE_PIXEL );
 		PARSE_DECL( "buffer", DECL_TYPE_BUFFER );
+		PARSE_DECL( "sampler", DECL_TYPE_SAMPLER );
+		PARSE_DECL( "texture", DECL_TYPE_TEXTURE );
 	}
 
 	fclose( f );
@@ -434,6 +509,22 @@ static void generate_hlsl_file( FILE *hfsl, ParsedFile *parsed, const char *inpu
 	{
 		Declaration *decl   = &parsed->declarations[i];
 		Layout      *layout = find_layout( parsed, decl->layout_name );
+
+		if ( decl->type == DECL_TYPE_TEXTURE || decl->type == DECL_TYPE_SAMPLER )
+		{
+			if ( decl->type == DECL_TYPE_SAMPLER )
+			{
+				int reg_num = ( strlen( decl->binding ) > 2 ) ? atoi( &decl->binding[2] ) : 0;
+				fprintf( hfsl, "SamplerState %s : register(s%d);\n", decl->name, reg_num );
+			}
+			else if ( decl->type == DECL_TYPE_TEXTURE )
+			{
+				int reg_num = ( strlen( decl->binding ) > 2 ) ? atoi( &decl->binding[2] ) : 0;
+				fprintf( hfsl, "Texture2D %s : register(t%d);\n", decl->name, reg_num );
+			}
+			continue;
+		}
+
 		if ( !layout || decl->host == ONLY_CPU )
 		{
 			fprintf( stderr,
@@ -471,8 +562,7 @@ static void generate_hlsl_file( FILE *hfsl, ParsedFile *parsed, const char *inpu
 			}
 			else
 			{
-				fprintf( hfsl, "    %s %s : %s;\n", mapping.hlsl_type, field->name, field->semantic
-				         /*field->semantic_index*/ );
+				fprintf( hfsl, "    %s %s : %s;\n", mapping.hlsl_type, field->name, field->semantic );
 			}
 		}
 		fprintf( hfsl, "};\n\n" );
@@ -522,7 +612,7 @@ int main( int argc, char **argv )
 {
 	if ( argc < 3 )
 	{
-		fprintf( stderr, "Usage: %s <input.dsl> <output_basename>\n", argv[0] );
+		fprintf( stderr, "Usage: %s <input.vtx> <output_basename>\n", argv[0] );
 		fprintf( stderr, "  Example: %s my_shader.vtx my_shader_generated\n", argv[0] );
 		fprintf( stderr, "  This will generate 'my_shader_generated.h' and 'my_shader_generated.hlsl'\n" );
 		return EXIT_FAILURE;

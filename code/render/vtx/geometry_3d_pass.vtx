@@ -13,6 +13,14 @@ layout Geometry3D_Transform
   matrix projection;
 };
 
+layout Geometry3D_Light
+{
+  float3 position;
+  float intensity;
+  float3 direction;
+  float radius;
+};
+
 layout Geometry3D_InstancedLayout
 {
   float4 instanceMatrixRow0 : INSTANCEMTX0;
@@ -31,5 +39,9 @@ vertex Geometry3D_Vertex @input;
 // IT IS BOUND TO BUFFER0
 //
 buffer Geometry3D_Transform @vertex @pixel @b0;
-
 buffer Geometry3D_InstancedLayout @vertex @pixel @b1;
+buffer Geometry3D_Light @pixel @b2;
+
+texture texture1 @t0;
+sampler sampler1 @s0;
+

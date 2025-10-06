@@ -67,20 +67,6 @@ const char *vertexShaderSource = SHADER_CODE(
     float2 uv : TEXCOORD;
   };
 
-  // struct PS_INPUT {
-  //   float4 Pos : SV_POSITION;
-  //   float3 Normal : NORMAL;
-  //   float2 uv : TEXCOORD;
-  // };
-
-  // PS_INPUT VS_Main( VS_INPUT input ) {
-  //   PS_INPUT output;
-  //   output.Pos    = mul( input.Pos, transform );
-  //   output.uv     = input.uv;
-  //   output.Normal = mul((float3x3)normalMatrix, input.Normal);
-  //   return output;
-  // }
-
   struct PS_INPUT {
     float4 Pos : SV_POSITION;
     float3 Normal : NORMAL;
@@ -90,11 +76,11 @@ const char *vertexShaderSource = SHADER_CODE(
 
   PS_INPUT VS_Main(VS_INPUT input) {
     PS_INPUT output;
-    float4 worldPos = input.Pos; // if Pos already in world or model*pos as appropriate
+    float4 worldPos = input.Pos;
     output.Pos = mul(input.Pos, transform);
-    output.WorldPos =  worldPos;//  (mul(input.Pos, transform)).xyz; // or pass model-space pos and transform in PS
+    output.WorldPos =  worldPos;
     output.uv     = input.uv;
-    output.Normal = input.Normal;//mul((float3x3)normalMatrix, input.Normal);
+    output.Normal = input.Normal;
     return output;
   }
 

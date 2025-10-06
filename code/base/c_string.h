@@ -25,28 +25,28 @@ void cstr_append_char( CString *s, char c );
 
 void cstr_appendf( CString *s, const char *fmt, ... );
 
-#define DECLARE_CSTRING( name, size )                                                                        \
-	char    name##_storage[size];                                                                            \
-	CString name;                                                                                            \
+#define DECLARE_CSTRING( name, size )                                                                                  \
+	char    name##_storage[size];                                                                                      \
+	CString name;                                                                                                      \
 	cstr_init( &name, name##_storage, size )
 
-#define MAKE_CSTR_LIST( NAME, COUNT, SIZE )                                                                  \
-	char    NAME##_storage[COUNT][SIZE];                                                                     \
-	CString NAME[COUNT];                                                                                     \
-	size_t  NAME##_count = 0;                                                                                \
-	do                                                                                                       \
-	{                                                                                                        \
-		for ( size_t i = 0; i < ( COUNT ); ++i )                                                             \
-			cstr_init( &( NAME )[i], NAME##_storage[i], SIZE );                                              \
+#define MAKE_CSTR_LIST( NAME, COUNT, SIZE )                                                                            \
+	char    NAME##_storage[COUNT][SIZE];                                                                               \
+	CString NAME[COUNT];                                                                                               \
+	size_t  NAME##_count = 0;                                                                                          \
+	do                                                                                                                 \
+	{                                                                                                                  \
+		for ( size_t i = 0; i < ( COUNT ); ++i )                                                                       \
+			cstr_init( &( NAME )[i], NAME##_storage[i], SIZE );                                                        \
 	} while ( 0 )
 
-#define CSTRING_LIST_PUSH( NAME, STR )                                                                       \
-	do                                                                                                       \
-	{                                                                                                        \
-		if ( NAME##_count < sizeof( NAME ) / sizeof( NAME[0] ) )                                             \
-		{                                                                                                    \
-			cstr_set( &NAME[NAME##_count++], STR );                                                          \
-		}                                                                                                    \
+#define CSTRING_LIST_PUSH( NAME, STR )                                                                                 \
+	do                                                                                                                 \
+	{                                                                                                                  \
+		if ( NAME##_count < sizeof( NAME ) / sizeof( NAME[0] ) )                                                       \
+		{                                                                                                              \
+			cstr_set( &NAME[NAME##_count++], STR );                                                                    \
+		}                                                                                                              \
 	} while ( 0 )
 
 #endif // CSTRING_H
